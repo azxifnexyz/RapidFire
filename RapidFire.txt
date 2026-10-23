@@ -1,0 +1,30 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local function applyToTool(tool)
+    tool:SetAttribute("RateOfFire", 100000)
+    tool:SetAttribute("rateOfFire", 100000)
+end
+
+local function watch(container)
+    for _, child in ipairs(container:GetChildren()) do
+        if child:IsA("Tool") then
+            applyToTool(child)
+        end
+    end
+    container.ChildAdded:Connect(function(child)
+        if child:IsA("Tool") then
+            applyToTool(child)
+        end
+    end)
+end
+
+if player.Character then watch(player.Character) end
+if player:FindFirstChildOfClass("Backpack") then watch(player:FindFirstChildOfClass("Backpack")) end
+
+player.CharacterAdded:Connect(watch)
+player.ChildAdded:Connect(function(child)
+    if child:IsA("Backpack") then
+        watch(child)
+    end
+end)
